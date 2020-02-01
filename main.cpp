@@ -87,18 +87,28 @@ class TurnPoints
 
 // Function Prototypes
 void ProgramGreeting();		
+  // Introduces user to the game, shows title screen 
 
 void Unittest();	
 
 void DisplayInstructions();		
+  // Displays how to play the game
+  // Runs once at beginning of the game and can be called from the menu if needed again
 
 string PlayerName();
+  // Prompts user to enter their full name, returns name as string
 
 int RollDice();
+  // Returns a random number from 1 through 6
 
 int OptionMenu();
+  // Displays the option menu, prompts user to enter their choice 
+  // Returns user input as int
 
 void DisplayScore(string a, string b, int x, int y, int z);
+  // Displays the overall game score 
+  // Takes arguments for dispslay names and current score 
+  // Runs at the end of each turn, and at the end of the game
 
 //--------------------------------------------------
 
@@ -121,13 +131,11 @@ int main() {
   // Computer player will keep the default name: Computer Jones.
   humanScore.ChangeName(PlayerName());
 
-
-  // Program displays the instructions at beginning of the game.
-  // Rules can be displayed again whenever the option menu appears. 
   DisplayInstructions(); 
 
   // Below will display the current overall score of the game.
   // Will display at the beginning by default, and after each turn.
+  
   DisplayScore(humanScore.name, computerScore.name, gameTurn.WhatTurn(), humanScore.score, computerScore.score);
 
 while (gameTurn.flag != 1) {
