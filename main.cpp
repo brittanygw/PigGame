@@ -186,6 +186,12 @@ while (gameTurn.flag != 1) {
        // Prompts player to make move again 
        humanTurnInformation.move = OptionMenu();
      }
+     else if (humanTurnInformation.move == 4) {
+       humanTurnInformation.flag = 1;
+       computerTurnInformation.flag = 1;
+       gameTurn.flag = 1;
+
+     }
     }
 
     // End human turn
