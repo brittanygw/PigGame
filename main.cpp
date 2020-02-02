@@ -1,12 +1,16 @@
+// Header
 // CISP400 16631
 // 2/2/2020
 // Brittany Wilson (W1811883)
+// piggame.cpp
 
 #include <iostream>		
 using namespace std;
 
-//The class below will create a scorekeeper for each object created.
-//Program will create one scorekeeper per player (2 objects).
+// The class below will create a scorekeeper for each object created
+// This is the overall score, not the points for turn/round
+// Program will create one scorekeeper per player (2 objects)
+
 class Scores 
 {
 
@@ -19,23 +23,26 @@ class Scores
   
     // Member Functions
 
+    // This method will add points to the new score
     void AdjustScore(int points) {
       score = score + points;
     }
     
+    // This method returns the player's current score
     int PrintScore() {
       return score;
     }
 
+    // This method will change the name from default; only human player will use 
     void ChangeName(string userInput) {
       name = userInput;
     }
 
 };
 
-//The class below will create a turnkeeper object.
-// TO DO: use this to keep track if the game is running or not.
-// TO DO: flag to continue, 1 means game over.
+// The TurnCounter below will create a turnkeeper object
+// The flag will keep track of whether the game is continuing 
+// Flag flipping to 1 means game is over
 
 class TurnCounter
 {
@@ -48,9 +55,12 @@ class TurnCounter
   
     // Member Functions
 
+    // Increments the turn counter
     void AddTurn() {
       turn++;
     } 
+
+    // Returns what the current turn is 
     int WhatTurn() {
       return turn;
     }
@@ -58,7 +68,7 @@ class TurnCounter
 };
 
 // The class below will create an object that keeps track of turn information
-// Program will create one per player (2 objects).
+// Program will create one per player (2 objects)
 
 class TurnPoints
 {
@@ -67,16 +77,17 @@ class TurnPoints
     public: 
   
     // Data Members 
-    int points = 0; 
-    int roll = 0;
-    int flag = 0;
-    int move = 0;
+    int points = 0;     // Points earned this round
+    int roll = 0;       // Player's most recent roll
+    int flag = 0;       // Flag set to 0 means player's turn continues, 1 means turn is over
+    int move = 0;       // Player's most recent move suggestion 
   
     // Member Functions
     void TurnOver() {
       flag = 1;
     }
 
+    // This method will reset everything to 0 at the end of each turn
     void TurnReset() {
       points = 0;
       roll = 0;
@@ -88,6 +99,8 @@ class TurnPoints
 // Function Prototypes
 void ProgramGreeting();		
   // Introduces user to the game, shows title screen 
+  // Also programmer information, contact information, course information 
+  // Displays where the rules for the game can be found on Wikipedia 
 
 void Unittest();	
 
@@ -110,7 +123,7 @@ void DisplayScore(string a, string b, int x, int y, int z);
   // Takes arguments for dispslay names and current score 
   // Runs at the end of each turn, and at the end of the game
 
-//--------------------------------------------------
+//----------------------------------------------------------------------
 
 int main() {
 
@@ -169,7 +182,6 @@ while (gameTurn.flag != 1) {
        cout << "You roll a " << humanTurnInformation.roll << "." << endl; 
 
         // Rolling a 1 ends the turn and zeroes out points 
-
         if (humanTurnInformation.roll == 1) {
           cout << "BZZZT! End of turn." << endl;
           humanTurnInformation.flag = 1;
@@ -177,29 +189,30 @@ while (gameTurn.flag != 1) {
         } 
         
         // Otherwise, points are added to score
-
         else {
           humanTurnInformation.points = humanTurnInformation.points + humanTurnInformation.roll;
         }
 
-        
        cout << "You have " << humanTurnInformation.points << " points." << endl;
        cout << endl;
      } 
      
      // Player can also request to view rules again 
      else if (humanTurnInformation.move == 3) {
+
        DisplayInstructions();
 
        // Prompts player to make move again 
        humanTurnInformation.move = OptionMenu();
      }
+
+     // If human quits the game, ends everything 
      else if (humanTurnInformation.move == 4) {
        humanTurnInformation.flag = 1;
        computerTurnInformation.flag = 1;
        gameTurn.flag = 1;
-
      }
+
     }
 
     // End human turn
@@ -215,15 +228,17 @@ while (gameTurn.flag != 1) {
 
       // Interpret computer's move
 
-      // If computer rolls a 1, 2, or 3 it will hold.
+      // If computer rolls a 1, 2, or 3 it will hold
+      // If computer rolls a 4, 5, or 6, will roll again for score
 
+      // Computer holds
       if (computerTurnInformation.move < 4) {
         cout << "Computer holds." << endl;
         computerTurnInformation.flag = 1;
       } 
-      // Otherwise, it rolls for its turn.
 
-      else {
+      // Otherwise, the computer rolls for its turn
+        else {
         computerTurnInformation.roll = RollDice();
         cout << "Computer rolls a " << computerTurnInformation.roll << "." << endl;
 
@@ -236,7 +251,6 @@ while (gameTurn.flag != 1) {
         } 
         
         // Otherwise, points are added to round score
-
         else {
           computerTurnInformation.points = computerTurnInformation.points + computerTurnInformation.roll;
         }
@@ -257,37 +271,39 @@ while (gameTurn.flag != 1) {
   cout << endl;
   cout << "End of round." << endl;
 
-  // Specification B1 - Display Turn Stats
-
-  //Extracts the first name only from the player's name
-
+  //Loop below extracts the first name only from the player's name
   for (int i = 0; i < humanScore.name.find(" " , 0); ++i) {
     cout << humanScore.name.at(i);
     }
 
+  // Specification B1 - Display Turn Stats
   cout << " earned " << humanTurnInformation.points << " points, ";
   cout << "Computer earned " << computerTurnInformation.points << " points." << endl;
 
   // Turn is over, clean up after the turn below:
-
   humanTurnInformation.TurnReset();
   computerTurnInformation.TurnReset();
 
-
  DisplayScore(humanScore.name, computerScore.name, gameTurn.WhatTurn(), humanScore.score, computerScore.score);
 
- if (humanScore.score >= 50 || computerScore.score >= 50) {
+  // Game ends if either player scores 100 or more
+ if (humanScore.score >= 100 || computerScore.score >= 100) {
    gameTurn.flag = 1;
  }
 
  }
 
+  // End game text
  cout << "GAME OVER." << endl;
  cout << endl;
  cout << "--Final Score--";
  DisplayScore(humanScore.name, computerScore.name, gameTurn.WhatTurn(), humanScore.score, computerScore.score);
 
- if (computerScore.score > humanScore.score) {
+  // Determines who won the game 
+  // In event of a tie, computer wins 
+  // Because the computer is very bad at this game
+
+ if (computerScore.score >= humanScore.score) {
    cout << "The winner is: " << computerScore.name << "!!!" << endl;
  } else {
    cout << "The winner is: " << humanScore.name << "!!!" << endl;
@@ -295,7 +311,7 @@ while (gameTurn.flag != 1) {
  
 }
 
-// --------------------------------------------------------------------
+// -------------------------------------------------------------------------------------
 
 void ProgramGreeting() {
 
@@ -313,7 +329,7 @@ cout << "by  : Brittany Wilson (brittany.inbox@gmail.com)" << endl;
 cout << "for : Folsom City College - CISP 400" << endl;
 
 // Specification B2 - Display Due Date 
-cout << "date: 2/3/2020" << endl;
+cout << "date: 2/2/2020" << endl;
 
 cout << endl;
 
@@ -348,7 +364,7 @@ string PlayerName() {
 
   }
 
-  // No answer below will change the outcome, this question is just for fun.
+  // Code below has no functionality, this question is just for fun.
 
   cout << "Are you ready to have fun? (Yes/No)" << endl;
   cin >> userFun; 
@@ -381,7 +397,7 @@ void DisplayInstructions() {
 
   // Explains the rules to the game
   // Runs at the beginning of the game 
-  //  and can be called up on menu
+  //  and can be called up from menu
   
 cout << "PIG Rules" << endl;
 cout << "---------" << endl;
@@ -434,6 +450,9 @@ int OptionMenu() {
     cout << "Invalid entry. Please choose an option from the menu." << endl;
     cin >> playerMove;
   }
+
+  // If the user enters a non-number, the program goes into an infite loop and crashes
+  // TO DO: fix for that
 
   if (playerMove == 1) {
     cout << "You roll!" << endl;
